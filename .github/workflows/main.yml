@@ -18,7 +18,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.x'
+          flutter-version: '3.x'
 
       - name: Install dependencies
         run: flutter pub get
@@ -50,4 +50,4 @@ jobs:
         with:
           serviceAccountJson: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
           filePath: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-debug.apk
-          folderId: <your-folder-id> # Replace this with the ID of your Google Drive folder
+          folderId: 1lPqOuh_QbS1vhw7aa7fX4I6SOAmYNzKz # Replace this with the ID of your Google Drive folder
