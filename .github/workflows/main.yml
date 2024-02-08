@@ -38,7 +38,9 @@ jobs:
         with:
           name: debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
-          tag: v1.0.${{github.run_number}}
+          tag: v1.0.${{github.run_number}}-test
+          token: ${{ secrets.TOKEN }}
+          
           
 
       - name: Release APK
@@ -52,6 +54,7 @@ jobs:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           tag: v1.0.${{github.run_number}}
+          token: ${{ secrets.TOKEN }}
 
 
       # - name: Upload APK to GitHub Release
