@@ -15,10 +15,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Set up java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.x'
+          flutter-version: '3.x'
 
       - name: Install dependencies
         run: flutter pub get
@@ -27,27 +33,38 @@ jobs:
         run: flutter build apk
 
       - name: Save APK artifact
-        if: github.event.pull_request.head.ref == 'dev'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'dev'
         uses: actions/upload-artifact@v2
         with:
           name: debug-apk
-          path: build\app\outputs\flutter-apk\app-debug.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          tag: v1.0.${{github.run_number}}-test
+          token: ${{ secrets.TOKEN }}
+          
+          
 
       - name: Release APK
-        if: github.event.pull_request.head.ref == 'main'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'main'
         run: flutter build apk --release
 
       - name: Save Release APK artifact
-        if: github.event.pull_request.head.ref == 'main'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'main'
         uses: actions/upload-artifact@v2
         with:
           name: release-apk
-          path: build\app\outputs\flutter-apk\app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          tag: v1.0.${{github.run_number}}
+          token: ${{ secrets.TOKEN }}
 
-      - name: Upload APK to Google Drive
-        if: github.event.pull_request.head.ref == 'dev' || github.event.pull_request.head.ref == 'main'
-        uses: jakejarvis/google-drive-upload-action@v2.2.1
-        with:
-          serviceAccountJson: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
-          filePath: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-debug.apk
-          folderId: <your-folder-id> # Replace this with the ID of your Google Drive folder
+
+      # - name: Upload APK to GitHub Release
+      #   if: github.event_name == 'pull_request' && (github.event.pull_request.head.ref == 'dev' || github.event.pull_request.head.ref == 'main')
+      #   uses: morrisjobke/upload-to-release@v1
+      #   with:
+      #     files: |
+      #       build/app/outputs/flutter-apk/app-debug.apk
+      #       build/app/outputs/flutter-apk/app-release.apk
+      #     repo_token: ${{ secrets.TOKEN }}
+      #     tag: ${{ github.sha }}
+
+      # Add additional steps to move the uploaded APKs to Google Drive
