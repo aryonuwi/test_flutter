@@ -38,6 +38,8 @@ jobs:
         with:
           name: debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
+          tag: v1.0.${{github.run_number}}
+          
 
       - name: Release APK
         if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'main'
@@ -49,6 +51,8 @@ jobs:
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          tag: v1.0.${{github.run_number}}
+
 
       # - name: Upload APK to GitHub Release
       #   if: github.event_name == 'pull_request' && (github.event.pull_request.head.ref == 'dev' || github.event.pull_request.head.ref == 'main')
