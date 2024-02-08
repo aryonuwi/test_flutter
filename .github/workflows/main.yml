@@ -1,0 +1,53 @@
+name: Build and Release APK
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build_and_release:
+    name: Build and Release APK
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk
+
+      - name: Save APK artifact
+        if: github.ref == 'refs/heads/dev'
+        uses: actions/upload-artifact@v2
+        with:
+          name: debug-apk
+          path: build\app\outputs\flutter-apk\app-debug.apk
+
+      - name: Release APK
+        if: github.ref == 'refs/heads/main'
+        run: flutter build apk --release
+
+      - name: Save Release APK artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-apk
+          path: build\app\outputs\flutter-apk\app-release.apk
+
+      - name: Upload APK to Google Drive
+        if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+        uses: jakejarvis/google-drive-upload-action@v2.2.1
+        with:
+          serviceAccountJson: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          filePath: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-debug.apk
+          folderId: <your-folder-id> # Replace this with the ID of your Google Drive folder
