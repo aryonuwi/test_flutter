@@ -18,22 +18,23 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.x'
+          flutter-version: '2.x'
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build Debug APK
+        if: github.event.pull_request.head.ref == 'dev'
         run: flutter build apk
 
-      - name: Save APK artifact
+      - name: Save Debug APK artifact
         if: github.event.pull_request.head.ref == 'dev'
         uses: actions/upload-artifact@v2
         with:
           name: debug-apk
-          path: build\app\outputs\flutter-apk\app-debug.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
 
-      - name: Release APK
+      - name: Build Release APK
         if: github.event.pull_request.head.ref == 'main'
         run: flutter build apk --release
 
@@ -42,12 +43,15 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: release-apk
-          path: build\app\outputs\flutter-apk\app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
-      # - name: Upload APK to Google Drive
-      #   if: github.event.pull_request.head.ref == 'dev' || github.event.pull_request.head.ref == 'main'
-      #   uses: jakejarvis/google-drive-upload-action@v2.2.1
-      #   with:
-      #     serviceAccountJson: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
-      #     filePath: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-debug.apk
-      #     folderId: 1lPqOuh_QbS1vhw7aa7fX4I6SOAmYNzKz # Replace this with the ID of your Google Drive folder
+      - name: Upload APKs to Google Drive
+        if: github.event.pull_request.head.ref == 'dev' || github.event.pull_request.head.ref == 'main'
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.x'
+        env:
+          GDRIVE_APK_PATH: ${{ github.workspace }}/build/app/outputs/flutter-apk/
+        run: |
+          flutter pub global activate gdrive_cli
+          gdrive upload --parent 1lPqOuh_QbS1vhw7aa7fX4I6SOAmYNzKz $GDRIVE_APK_PATH/*.apk
