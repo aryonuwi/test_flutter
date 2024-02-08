@@ -44,14 +44,14 @@ jobs:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Upload APK to GitHub Release
-        if: github.event_name == 'pull_request' && (github.event.pull_request.head.ref == 'dev' || github.event.pull_request.head.ref == 'main')
-        uses: morrisjobke/upload-to-release@v1
-        with:
-          files: |
-            build/app/outputs/flutter-apk/app-debug.apk
-            build/app/outputs/flutter-apk/app-release.apk
-          repo_token: ${{ secrets.TOKEN }}
-          tag: ${{ github.sha }}
+      # - name: Upload APK to GitHub Release
+      #   if: github.event_name == 'pull_request' && (github.event.pull_request.head.ref == 'dev' || github.event.pull_request.head.ref == 'main')
+      #   uses: morrisjobke/upload-to-release@v1
+      #   with:
+      #     files: |
+      #       build/app/outputs/flutter-apk/app-debug.apk
+      #       build/app/outputs/flutter-apk/app-release.apk
+      #     repo_token: ${{ secrets.TOKEN }}
+      #     tag: ${{ github.sha }}
 
       # Add additional steps to move the uploaded APKs to Google Drive
