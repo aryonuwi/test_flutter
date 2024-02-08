@@ -40,6 +40,7 @@ jobs:
           path: build/app/outputs/flutter-apk/app-debug.apk
           tag: v1.0.${{github.run_number}}-test
           token: ${{ secrets.TOKEN }}
+          artifacts: "build/app/outputs/apk/debug/*"
           
           
 
@@ -55,6 +56,7 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
           tag: v1.0.${{github.run_number}}
           token: ${{ secrets.TOKEN }}
+          artifacts: "build/app/outputs/flutter-apk/*"
 
 
       # - name: Upload APK to GitHub Release
