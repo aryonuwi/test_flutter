@@ -3,7 +3,11 @@ on:
     branches:
       - main
       - dev
-
+  # push:
+  #   branches:
+  #     - main
+  #     - master
+  #     - develop
 name: "Build & Release"
 jobs:
   build:
@@ -26,9 +30,8 @@ jobs:
       - name: Flutter get depedency
         run: flutter pub get
       
-      - name: Push to releases debug
-       if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'dev'
-       run: flutter build apk --debug
+      - name: flutter build apk debug
+        run: flutter build apk --debug
       
       - name: Push to releases debug
         if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'dev'
@@ -37,13 +40,11 @@ jobs:
           artifacts: "build/app/outputs/apk/debug/*"
           tag: v1.0.${{ github.run_number }}-Debug
           token: ${{ secrets.TOKEN }}
-      
-      
-      - name : APK Release deploy
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'main'
+
+      - name: flutter build apk
         run: flutter build apk 
       
-      - name: Push to releases 
+      - name: Push to releases release
         if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'main'
         uses: ncipollo/release-action@v1
         with:
@@ -58,17 +59,19 @@ jobs:
 
 # push to master, main, develop
 # pull request on main master
+
+
+
+
+
+
 # name: Build and Upload APK
+
 # on:
 #   pull_request:
 #     branches:
 #       - main
 #       - dev
-  # push:
-  #   branches:
-  #     - main
-  #     - master
-  #     - develop
 
 # jobs:
 #   build_and_upload_apk:
