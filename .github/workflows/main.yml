@@ -4,15 +4,16 @@ on:
   #     - main
   #     - dev
   
-  # merge_group:
-  #   branches:
-  #     - main
-  #     - dev
-
-  push:
+  merge_group:
     branches:
       - main
-      - develop
+      - dev
+
+  # push:
+  #   branches:
+  #     - main
+  #     - develop
+
 name: "Build & Release"
 jobs:
   build:
