@@ -27,14 +27,32 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.x'
-      - run: flutter pub get
-      - run: flutter test
-      - run: flutter build apk --debug --split-per-abi
-      - name: Push to Releases
+      - name: Flutter get depedency
+        run: flutter pub get
+      
+      - name: Push to releases debug
+       if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'dev'
+       run: flutter build apk --debug
+      
+      - name: Push to releases debug
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'dev'
         uses: ncipollo/release-action@v1
         with:
           artifacts: "build/app/outputs/apk/debug/*"
-          tag: v1.0.${{ github.run_number }}
+          tag: v1.0.${{ github.run_number }}-Debug
+          token: ${{ secrets.TOKEN }}
+      
+      
+      - name : APK Release deploy
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'main'
+        run: flutter build apk 
+      
+      - name: Push to releases 
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'main'
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/apk/release/*"
+          tag: v1.0.${{ github.run_number }}-Debug
           token: ${{ secrets.TOKEN }}
 
 
@@ -44,14 +62,7 @@ jobs:
 
 # push to master, main, develop
 # pull request on main master
-
-
-
-
-
-
 # name: Build and Upload APK
-
 # on:
 #   pull_request:
 #     branches:
@@ -131,4 +142,3 @@ jobs:
       #     repo_token: ${{ secrets.TOKEN }}
       #     tag: ${{ github.sha }}
 
-      # Add additional steps to move the uploaded APKs to Google Drive
