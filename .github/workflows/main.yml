@@ -1,13 +1,18 @@
 on:
-  pull_request:
-    branches:
-      - main
-      - dev
-  # push:
+  # pull_request:
   #   branches:
   #     - main
-  #     - master
-  #     - develop
+  #     - dev
+  
+  # merge_group:
+  #   branches:
+  #     - main
+  #     - dev
+
+  push:
+    branches:
+      - main
+      - develop
 name: "Build & Release"
 jobs:
   build:
