@@ -5,6 +5,7 @@ on:
   #     - dev
   
   merge_group:
+  push:
     branches:
       - main
       - dev
