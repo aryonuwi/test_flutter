@@ -1,13 +1,14 @@
 on:
-  pull_request:
-    branches:
-      - main
-      - dev
-  
-  # merge_group:
+  # pull_request:
   #   branches:
   #     - main
   #     - dev
+  
+  merge_group:
+  push:
+    branches:
+      - main
+      - dev
 
   # push:
   #   branches:
