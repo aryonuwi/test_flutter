@@ -1,13 +1,10 @@
 on:
-  merge_group:
+  pull_request:
     branches:
       - main
       - dev
-
-  # pull_request:
-  #   branches:
-  #     - main
-  #     - dev
+    types:
+      - closed
 
   # push:
   #   branches:
@@ -17,6 +14,7 @@ on:
 name: "Build & Release"
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     runs-on: windows-latest
     steps:
       - name: Checkout code
